@@ -123,7 +123,9 @@
                     "provider": "virtualbox",
                     "version": "{{ user `version` }}"
                 }
-            },
+            }
+        ],
+        [
             {
                 "type": "docker-import",
                 "repository": "{{ user `docker_username` }}/{{ user `atlas_name` }}",
