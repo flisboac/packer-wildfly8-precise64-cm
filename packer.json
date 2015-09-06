@@ -6,7 +6,8 @@
     "variables": {
         "atlas_username": "flisboac",
         "atlas_name": "wildfly8-precise64-cm",
-        "version": "0.1.0"
+        "version": "0.2.0",
+        "docker_username": "flisboac"
     },
     "provisioners": [
         {
@@ -85,32 +86,50 @@
             "ssh_wait_timeout": "10000s",
             "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo 'vagrant'|sudo -S bash 'shutdown.sh'",
             "tools_upload_flavor": "linux"
+        },
+        {
+            "type": "docker",
+            "commit": true,
+            "pull": true,
+            "image": "ubuntu:precise",
+            "login": true,
+            "login_email": "{{ user `docker_email` }}",
+            "login_username": "{{ user `docker_username` }}",
+            "login_password": "{{ user `docker_password` }}"
         }
     ],
     "post-processors": [
-        [{
-            "type": "vagrant",
-            "keep_input_artifact": false
-        },
-        {
-            "type": "atlas",
-            "only": ["vmware-iso"],
-            "artifact": "{{user `atlas_username`}}/{{user `atlas_name`}}",
-            "artifact_type": "vagrant.box",
-            "metadata": {
-                "provider": "vmware_desktop",
-                "version": "{{ user `version` }}"
-            }
-        },
-        {
-            "type": "atlas",
-            "only": ["virtualbox-iso"],
-            "artifact": "{{user `atlas_username`}}/{{user `atlas_name`}}",
-            "artifact_type": "vagrant.box",
-            "metadata": {
-                "provider": "virtualbox",
-                "version": "{{ user `version` }}"
-            }
-        }]
+        [
+            {
+                "type": "vagrant",
+                "keep_input_artifact": false
+            },
+            {
+                "type": "atlas",
+                "only": ["vmware-iso"],
+                "artifact": "{{user `atlas_username`}}/{{user `atlas_name`}}",
+                "artifact_type": "vagrant.box",
+                "metadata": {
+                    "provider": "vmware_desktop",
+                    "version": "{{ user `version` }}"
+                }
+            },
+            {
+                "type": "atlas",
+                "only": ["virtualbox-iso"],
+                "artifact": "{{user `atlas_username`}}/{{user `atlas_name`}}",
+                "artifact_type": "vagrant.box",
+                "metadata": {
+                    "provider": "virtualbox",
+                    "version": "{{ user `version` }}"
+                }
+            },
+            {
+                "type": "docker-import",
+                "repository": "{{ user `docker_username` }}/{{ user `atlas_name` }}",
+                "tag": "{{ user `version` }}"
+            },
+            "docker-push"
+        ]
     ]
 }
