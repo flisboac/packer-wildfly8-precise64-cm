@@ -3,7 +3,13 @@
 # PREPARATION
 export DEBIAN_FRONTEND="noninteractive"
 
-export SRC_DIR="/vagrant"
+if [ "$SRC_DIR" == "" ]; then
+	if [ -e "/vagrant" ]; then
+        export SRC_DIR="/vagrant"
+	else
+		export SRC_DIR="$(pwd)"
+	fi
+fi
 
 export WILDFLY_DESTDIR="/opt"
 export WILDFLY_HOME="$WILDFLY_DESTDIR/wildfly"
