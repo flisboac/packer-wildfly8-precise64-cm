@@ -1,0 +1,6 @@
+*.deb
+*.tar
+*.gz
+*.box
+.vars
+.vagrant
