@@ -44,7 +44,9 @@ mv $WILDFLY_DESTDIR/$WILDFLY_PKG_DIR $WILDFLY_HOME
 adduser --system --group --disabled-login $WILDFLY_USER
 chown -R $WILDFLY_USER:$WILDFLY_USER $WILDFLY_HOME
 usermod $WILDFLY_USER --home $WILDFLY_HOME
-addgroup vagrant $WILDFLY_USER
+if id -u vagrant > /dev/null 2>&1; then
+	addgroup vagrant $WILDFLY_USER
+fi
 cp $WILDFLY_HOME/bin/init.d/wildfly-init-debian.sh /etc/init.d/$WILDFLY_SERVICE
 cp $WILDFLY_HOME/bin/init.d/wildfly.conf /etc/default/$WILDFLY_SERVICE
 update-rc.d $WILDFLY_SERVICE defaults
